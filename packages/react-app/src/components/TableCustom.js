@@ -5,11 +5,10 @@ export default function TableCustom(props) {
 	const [tokens, setTokens] = useState([]);
 	const [data, setData] = useState([]);
 
-	
   useEffect(() => {
-  	let result = props.data.data.hasOwnProperty('tokens');
+  	let result = props.data.hasOwnProperty('tokens');
 	 	if (result) {
-			setTokens(props.data.data.tokens);
+			setTokens(props.data.tokens);
 		}	
 		  console.log('result: ' + tokens.length)
    });

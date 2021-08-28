@@ -223,7 +223,7 @@ function App(props) {
   const [ loading, setLoading ] = useState()
 
   const [ result, setResult ] = useState()
-  const [ data, setData ] = useState({})
+  const [ data, setData ] = useState()
   const [ empty, setEmpty ] = useState()
 
 
@@ -249,23 +249,21 @@ function App(props) {
 
         setLoading(true)
         try{
-          let axiosConfig = {
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "Access-Control-Allow-Origin": true,
-                "Access-Control-Allow-Credentials": true,
-            }
-          };
+          
           let url = 'https://api.ethplorer.io/getAddressInfo/' + address + '?apiKey=' + ETHPLORER_TOKEN;
-          const data = await axios.get(url)
+          const request = await axios.get(url)
           console.log('list all token for this account' + url)
-          console.log(data)
-          if (data.data) {
-            setData(data);
-          } else{
+          console.log(request)
+
+          if (request.data.hasOwnProperty('tokens')) {
+            setData(request.data);
+          } 
+          else{
             setEmpty(true)
           }
           setLoading(false)
+          console.log(data)
+
 
         }catch(e){
           message.error(' Sorry, the server is overloaded. 🧯🚒🔥');
@@ -386,7 +384,7 @@ function App(props) {
          {faucetHint}
       </div>
 
-      {data.data ? <TableCustom data={data} /> : emptyF() }
+      {data ? <TableCustom data={data} /> : emptyF() }
 
       
 

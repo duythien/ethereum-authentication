@@ -27,6 +27,8 @@ yarn start
 
 ## Demo video
 
+https://youtu.be/MOOaTV8Voco
+
 ## Test live
 
 https://list-token.phuquoc.dog/
