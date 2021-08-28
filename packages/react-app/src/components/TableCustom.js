@@ -7,7 +7,7 @@ export default function TableCustom(props) {
 
 	
   useEffect(() => {
-  	let result = props.data.hasOwnProperty('data');
+  	let result = props.data.data.hasOwnProperty('tokens');
 	 	if (result) {
 			setTokens(props.data.data.tokens);
 		}	
@@ -15,24 +15,10 @@ export default function TableCustom(props) {
    });
 
 
-
-   	
-  
-
-
- //  useEffect(() => {
- //    if (props.data.data  !== "undefined") {
-	// 	setTokens(props.data.data.tokens);
-	// }
-	// 	console.log('props.data')
-
-
- //   }, []);
-
 	return (
 			<div>
 
-			{tokens.length > 0
+			{tokens && tokens.length > 0
 				?
 	      <table className="table">
 				  <thead>

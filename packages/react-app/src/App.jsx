@@ -259,6 +259,7 @@ function App(props) {
           let url = 'https://api.ethplorer.io/getAddressInfo/' + address + '?apiKey=' + ETHPLORER_TOKEN;
           const data = await axios.get(url)
           console.log('list all token for this account' + url)
+          console.log(data)
           if (data.data) {
             setData(data);
           } else{
@@ -269,6 +270,7 @@ function App(props) {
         }catch(e){
           message.error(' Sorry, the server is overloaded. 🧯🚒🔥');
           console.log("FAILED TO GET...")
+          console.log(e.message)
         }
 
 
