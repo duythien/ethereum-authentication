@@ -46,6 +46,7 @@ const targetNetwork = NETWORKS['mainnet']; // <------- select your target fronte
 // 😬 Sorry for all the console logging
 const DEBUG = true
 
+console.log(process.env)
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -62,6 +63,7 @@ const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" 
 const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
+const ETHPLORER_TOKEN =  process.env.ETHPLORER_TOKEN || 'EK-82oc6-zkcE1EG-AuqNJ';
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 
@@ -147,6 +149,7 @@ function App(props) {
       console.log("👩‍💼 selected address:",address)
       console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
       console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
+      console.log("ETHPLORER_TOKEN: " + ETHPLORER_TOKEN);
       /*console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")*/
     /*  console.log("📝 readContracts",readContracts) */
       /*console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)*/
@@ -253,7 +256,7 @@ function App(props) {
                 "Access-Control-Allow-Credentials": true,
             }
           };
-          let url = 'https://api.ethplorer.io/getAddressInfo/' + address + '?apiKey=freekey';
+          let url = 'https://api.ethplorer.io/getAddressInfo/' + address + '?apiKey=' + ETHPLORER_TOKEN;
           const data = await axios.get(url)
           console.log('list all token for this account' + url)
           if (data.data) {
