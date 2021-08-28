@@ -14,6 +14,8 @@ import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import TableCustom  from "./components/TableCustom";
+
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 const axios = require('axios');
 /*
@@ -96,6 +98,10 @@ function App(props) {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
+
+
+  //const [display, setInjectedProvider] = useState();
+
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   //const yourMainnetBalance = useBalance(mainnetProvider, address);
@@ -214,6 +220,9 @@ function App(props) {
   const [ loading, setLoading ] = useState()
 
   const [ result, setResult ] = useState()
+  const [ data, setData ] = useState({})
+  const [ empty, setEmpty ] = useState()
+
 
   let display = ""
   if(result){
@@ -237,30 +246,23 @@ function App(props) {
 
         setLoading(true)
         try{
-          const msgToSign = await axios.get(serverUrl)
-          console.log("msgToSign",msgToSign)
-          if(msgToSign.data && msgToSign.data.length > 32){//<--- traffic escape hatch?
-            let currentLoader = setTimeout(()=>{setLoading(false)},4000)
-            let message = msgToSign.data.replace("**ADDRESS**",address)
-            let sig = await userProvider.send("personal_sign", [ message, address ]);
-            clearTimeout(currentLoader)
-            currentLoader = setTimeout(()=>{setLoading(false)},4000)
-            console.log("sig",sig)
-            const res = await axios.post(serverUrl, {
-              address: address,
-              message: message,
-              signature: sig,
-            })
-            clearTimeout(currentLoader)
-            setLoading(false)
-            console.log("RESULT:",res)
-            if(res.data){
-              setResult(res.data)
+          let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true,
+                "Access-Control-Allow-Credentials": true,
             }
-          }else{
-            setLoading(false)
-            setResult("😅 Sorry, the server is overloaded. Please try again later. ⏳")
+          };
+          let url = 'https://api.ethplorer.io/getAddressInfo/' + address + '?apiKey=freekey';
+          const data = await axios.get(url)
+          console.log('list all token for this account' + url)
+          if (data.data) {
+            setData(data);
+          } else{
+            setEmpty(true)
           }
+          setLoading(false)
+
         }catch(e){
           message.error(' Sorry, the server is overloaded. 🧯🚒🔥');
           console.log("FAILED TO GET...")
@@ -269,9 +271,23 @@ function App(props) {
 
 
       }}>
-        <span style={{marginRight:8}}>🔏</span>  sign a message with your ethereum wallet
+      <span style={{marginRight:8}}>🔏</span>  
+        Get address info your ethereum wallet
       </Button>
     )
+  }
+  const emptyF = () => {
+
+    return(
+        <div>
+        {empty 
+          ?
+            <p>Your token empty</p>
+          : <></>
+
+        }
+        </div>
+    );
   }
 
   return (
@@ -347,11 +363,10 @@ function App(props) {
       */}
       <ThemeSwitch />
 
-
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{textAlign: "center", padding: 10 }}>
          <Account
-            connectText={"Connect Ethereum Wallet"}
+           connectText={"Connect Ethereum Wallet"}
            onlyShowButton={!isSigner}
            address={address}
            localProvider={localProvider}
@@ -366,7 +381,12 @@ function App(props) {
          {faucetHint}
       </div>
 
+      {data.data ? <TableCustom data={data} /> : emptyF() }
+
+      
+
       {display}
+
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support:
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
@@ -435,14 +455,14 @@ const logoutOfWeb3Modal = async () => {
   }, 1);
 };
 
- window.ethereum && window.ethereum.on('chainChanged', chainId => {
+window.ethereum && window.ethereum.on('chainChanged', chainId => {
   web3Modal.cachedProvider &&
   setTimeout(() => {
     window.location.reload();
   }, 1);
 })
 
- window.ethereum && window.ethereum.on('accountsChanged', accounts => {
+window.ethereum && window.ethereum.on('accountsChanged', accounts => {
   web3Modal.cachedProvider &&
   setTimeout(() => {
     window.location.reload();

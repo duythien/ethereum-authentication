@@ -8,7 +8,7 @@ export default function Header() {
     <a href="/" >
       <PageHeader
         title="🔏 Sign in with Web3"
-        subTitle="Sign a message with your wallet to log in..."
+        subTitle="List all token with your wallet to log in..."
         style={{ cursor: "pointer" }}
       />
     </a>
